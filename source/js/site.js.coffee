@@ -38,16 +38,12 @@ Gallery.loadImages = (data) ->
 		# Create elements
 		$overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
 		$container = $('<div />').attr 'class', 'img-container'
-		$img = $('<img />').attr('src', @.gsx$url.$t)
+		$img = $('<img />').load(->
+			$container.append($overlay, $img).appendTo $main
+
+			# Initiate Isotope when all images have loaded
+			if i is data.feed.entry.length-1 then $main.isotope itemSelector: '.img-container')
+			.attr('src', @.gsx$url.$t)
 			.data 'info',
 				name: @.gsx$name.$t
 				caption: @.gsx$caption.$t
-			.load(->
-				if not @complete or typeof @naturalWidth is "undefined" or @naturalWidth is 0
-					console.log 'Broken image'
-				else
-					$container.append($overlay, $img).appendTo $main
-
-					# Initiate Isotope when all images have loaded
-					if i is data.feed.entry.length-1 then $main.isotope itemSelector: '.img-container'
-			)
