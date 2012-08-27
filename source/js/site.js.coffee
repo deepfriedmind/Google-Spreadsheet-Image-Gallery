@@ -1,5 +1,13 @@
-# Declare the main application object
+# Include vendor JS
+#= require 'vendor/jquery.isotope'
+
+
+# Declare the main application object...
 Gallery = {}
+
+# ...and some misc vars
+$body = $ 'body'
+$main = $ '#main'
 
 
 # Get spreadsheet JSON from Google Data API
@@ -22,16 +30,15 @@ $.ajax( Gallery.ajaxOpts ).done (data) ->
 Gallery.loadImages = (data) ->
 	console.log 'Google Spreadsheet JSON data: ', data
 
-	$.each data.feed.entry, () ->
+	$.each data.feed.entry, (i) ->
 		console.log "URL: ", @.gsx$url.$t
 		console.log "Name: ", @.gsx$name.$t
 		console.log "Caption: ", @.gsx$caption.$t
 
-		overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
-
-		container = $('<div />').attr('class', 'img-container').append overlay
-
-		img = $('<img />').attr('src', @.gsx$url.$t)
+		# Create elements
+		$overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
+		$container = $('<div />').attr 'class', 'img-container'
+		$img = $('<img />').attr('src', @.gsx$url.$t)
 			.data 'info',
 				name: @.gsx$name.$t
 				caption: @.gsx$caption.$t
@@ -39,7 +46,8 @@ Gallery.loadImages = (data) ->
 				if not @complete or typeof @naturalWidth is "undefined" or @naturalWidth is 0
 					console.log 'Broken image'
 				else
-					container.append img
+					$container.append($overlay, $img).appendTo $main
 
-					$('#main').append container
+					# Initiate Isotope when all images have loaded
+					if i is data.feed.entry.length-1 then $main.isotope itemSelector: '.img-container'
 			)

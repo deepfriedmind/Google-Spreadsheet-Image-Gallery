@@ -3,7 +3,12 @@
 //HTML5 Boilerplate + Normalize Built In
 *= require "vendor/html5bp.css"
 
+//Isotope
+*= require "vendor/isotope.css"
+
 */
+
+@import 'compass';
 
 $imgThumbSize: 306px;
 $imgFullSize: 612px;
@@ -20,21 +25,26 @@ $imgFullSize: 612px;
 		}
 
 		.overlay {
-			display: none;
-			background: black;
+			@include opacity(0);
+			@include transition(all .15s);
+			background-image: black;
+			@include background-image(linear-gradient(top, rgba(69,72,77,0.85) 0%, rgba(0,0,0,0.85) 100%));
 			color: white;
 			text-align: center;
-			line-height: $imgThumbSize;
 			position: absolute;
-			top: 0;
+			bottom: 0;
 			left: 0;
 			width: $imgThumbSize;
-			height: $imgThumbSize;
+			max-height: 0;
+			line-height: 0;
 		}
 
 		&:hover {
 			.overlay {
-				display: block;
+				@include opacity(1);
+				@include transition(all .25s ease-in-out);
+				max-height: $imgThumbSize;
+				line-height: $imgThumbSize;
 			}
 		}
 	}
