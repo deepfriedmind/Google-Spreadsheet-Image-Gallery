@@ -18,6 +18,8 @@ $imgFullSize: 612px;
 		width: $imgThumbSize;
 		height: $imgThumbSize;
 		position: relative;
+		float: left;
+		cursor: pointer;
 
 		img {
 			width: 100%;
@@ -46,6 +48,13 @@ $imgFullSize: 612px;
 				max-height: $imgThumbSize;
 				line-height: $imgThumbSize;
 			}
+		}
+
+		&.active {
+			width: $imgFullSize;
+			height: $imgFullSize;
+
+			.overlay { display: none; }
 		}
 	}
 }
