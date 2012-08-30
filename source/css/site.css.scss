@@ -1,19 +1,23 @@
-/**
-
-//HTML5 Boilerplate + Normalize Built In
-*= require "vendor/html5bp.css"
-
-//Isotope
-*= require "vendor/isotope.css"
-
-*/
-
+// Import Compass and external stylesheets
 @import 'compass';
+@import 'vendor/html5bp';
+@import 'vendor/isotope';
 
+
+// Misc vars
 $imgThumbSize: 306px;
 $imgFullSize: 612px;
 
+
+// Main styles
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
 #main {
+	margin: 0 auto;
+
 	.img-container {
 		width: $imgThumbSize;
 		height: $imgThumbSize;
