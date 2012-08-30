@@ -17,7 +17,6 @@ body {
 	margin: 0 auto;
 
 	.img-container {
-		@include transition(transform .25s ease-in-out);
 		width: $imgThumbSize;
 		height: $imgThumbSize;
 		position: relative;
@@ -56,7 +55,6 @@ body {
 		&.active {
 			@include box-shadow(0 0 40px rgba(black, .8));
 			@include scale(1.25);
-			@include transition(transform .25s ease-in-out);
 			width: $imgFullSize;
 			height: $imgFullSize;
 			z-index: 9999;
