@@ -1,14 +1,13 @@
 # Include vendor JS
-#= require 'vendor/jquery.isotope'
+#= require 'vendor/jquery.masonry'
 #= require 'vendor/jquery.lazyload'
 
 
 # Declare the main application object...
-Gallery = {}
-
-# ...and some misc vars
-$body = $ 'body'
-$main = $ '#main'
+Gallery =
+	# ...and some misc vars
+	$body: $ 'body'
+	$main: $ '#main'
 
 
 # Get spreadsheet JSON from Google Data API
@@ -36,7 +35,6 @@ Gallery.loadImages = (data) ->
 		console.log "Name: ", @.gsx$name.$t
 		console.log "Caption: ", @.gsx$caption.$t
 
-
 		# Create elements
 		$overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
 		$container = $('<div />').attr
@@ -51,26 +49,35 @@ Gallery.loadImages = (data) ->
 				name: @.gsx$name.$t
 				caption: @.gsx$caption.$t
 
-		$container.append($overlay, $img).appendTo $main
+		$container.append($overlay, $img).appendTo Gallery.$main
 
-		# Initiate Isotope when all images have loaded
+		# Initiate Masonry and lazy load when all elements have been created in the DOM
 		if i is data.feed.entry.length-1
+			Gallery.init()
 
-			Gallery.lazyLoad(
-				effect: 'fadeIn'
-				threshold: 100
-			)
 
-			$main.isotope(
-				itemSelector: '.img-container'
-				onLayout: ->
-					Gallery.lazyLoad()
-				)
+Gallery.init = ->
+	Gallery.lazyLoad(
+		effect: 'fadeIn'
+		threshold: 100
+	)
+
+	Gallery.$main.masonry(
+		itemSelector: '.img-container'
+		isAnimated: not Modernizr.csstransitions
+		isFitWidth: true
+	)
 
 
 # Lazy load function
 Gallery.lazyLoad = (opts) ->
-	$('.img-container img').lazyload( opts )
+	$('.img-container img').lazyload opts
+
+# Refresh lazy load on window (smart) resize
+$(window).smartresize(->
+	# A bit dirty with a timer but Masonry doesn't supply a reLayout callback like Isotope does
+	setTimeout Gallery.lazyLoad, 1500
+)
 
 
 # Image click handler
@@ -79,15 +86,13 @@ $('#main').on 'click', '.img-container', ->
 	$id = '#' + $this.attr 'id'
 
 	if $this.hasClass 'active'
-		console.log 'hej'
 		$this.removeClass 'active'
-		$main.isotope 'reLayout'
+		Gallery.$main.masonry 'reload'
 
 	else
 		$('html, body').animate
 			scrollTop: $($id).offset().top
 		, 'slow', ->
-			console.log 'da'
 			$('.img-container.active').removeClass 'active'
 			$this.addClass 'active'
-			$main.isotope 'reLayout'
+			Gallery.$main.masonry 'reload'
