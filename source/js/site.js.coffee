@@ -31,9 +31,9 @@ Gallery.loadImages = (data) ->
 	console.log 'Google Spreadsheet JSON data: ', data
 
 	$.each data.feed.entry, (i) ->
-		console.log "URL: ", @.gsx$url.$t
-		console.log "Name: ", @.gsx$name.$t
-		console.log "Caption: ", @.gsx$caption.$t
+		console.log 'URL: ', @.gsx$url.$t
+		console.log 'Name: ', @.gsx$name.$t
+		console.log 'Caption: ', @.gsx$caption.$t
 
 		# Create elements
 		$overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
@@ -90,9 +90,20 @@ $('#main').on 'click', '.img-container', ->
 		Gallery.$main.masonry 'reload'
 
 	else
-		$('html, body').animate
-			scrollTop: $($id).offset().top
-		, 'slow', ->
-			$('.img-container.active').removeClass 'active'
-			$this.addClass 'active'
-			Gallery.$main.masonry 'reload'
+		$('.img-container.active').removeClass 'active'
+		$this.addClass 'active'
+		Gallery.$main.masonry 'reload'
+
+		# Scroll the element nicely in to view
+		$scrollOffset = $(window).scrollTop()+100
+		$elementOffset = Math.floor $($id).offset().top
+		console.log '$scrollOffset: ', $scrollOffset
+		console.log '$elementOffset: ', $elementOffset
+
+		unless $scrollOffset is $elementOffset
+			setTimeout (->
+				console.log 'scrolling'
+				$('html, body').animate
+					scrollTop: $elementOffset-100
+				, 'slow'
+			), 1000

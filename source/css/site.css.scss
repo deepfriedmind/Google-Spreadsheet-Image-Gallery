@@ -5,19 +5,19 @@
 
 // Misc vars
 $imgThumbSize: 306px;
-$imgFullSize: 612px;
+$imgFullSize: 510px;
 
 
 // Main styles
-html, body {
-	width: 100%;
-	height: 100%;
+body {
+	margin: 2% 0;
 }
 
 #main {
 	margin: 0 auto;
 
 	.img-container {
+		@include transition(transform .25s ease-in-out);
 		width: $imgThumbSize;
 		height: $imgThumbSize;
 		position: relative;
@@ -54,8 +54,13 @@ html, body {
 		}
 
 		&.active {
+			@include box-shadow(0 0 40px rgba(black, .8));
+			@include scale(1.25);
+			@include transition(transform .25s ease-in-out);
 			width: $imgFullSize;
 			height: $imgFullSize;
+			z-index: 9999;
+			margin: 52px 0px 0px 52px;
 
 			.overlay { display: none; }
 		}
