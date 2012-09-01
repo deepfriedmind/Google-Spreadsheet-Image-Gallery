@@ -3,50 +3,84 @@
 @import 'vendor/html5bp';
 
 
+// Include fonts
+@include font-face("BebasNeue", font-files("bebas-neue/BebasNeue-webfont.woff", woff, "bebas-neue/BebasNeue-webfont.ttf", truetype, "bebas-neue/BebasNeue-webfont.otf", opentype, "bebas-neue/BebasNeue-webfont.svg", svg), "bebas-neue/BebasNeue-webfont.eot");
+
+
 // Misc vars
 $imgThumbSize: 306px;
 $imgFullSize: 510px;
+$headline-font: BebasNeue, 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+$body-font: "PT Serif", Georgia, "Times New Roman", Times, serif;
 
 
 // Main styles
 body {
 	margin: 2% 0;
 	background: url(../img/bg.jpg);
+	color: white;
+	font-family: $body-font;
+}
+
+h2 {
+	font: {
+		family: $headline-font;
+		size: 30px;
+		weight: normal;
+	};
+	margin: 20px;
 }
 
 #main {
 	margin: 0 auto;
 
 	.img-container {
-		width: $imgThumbSize;
-		height: $imgThumbSize;
-		position: relative;
-		float: left;
 		cursor: pointer;
+		float: left;
+		height: $imgThumbSize;
+		overflow: hidden;
+		position: relative;
+		width: $imgThumbSize;
 
 		img {
 			width: 100%;
 			height: 100%;
 		}
 
-		.overlay {
+		.nameOverlay, .captionOverlay {
 			@include opacity(0);
 			@include transition(all .15s ease-out);
-			background-image: url(../img/image-overlay.png);
-			@include background-image(radial-gradient(center, ellipse cover,  rgba(255,227,204,0.7) 0%,rgba(229,180,140,0.7) 100%));
-			color: white;
-			text-align: center;
-			position: absolute;
 			bottom: 0;
 			left: 0;
-			width: $imgThumbSize;
 			max-height: 0;
+			position: absolute;
+		}
+
+		.nameOverlay {
+			background-image: url(../img/image-overlay.png);
+			@include background-image(radial-gradient(center, ellipse cover, rgba(255,227,204,0.7) 0%,rgba(229,180,140,0.7) 100%));
+			font: {
+				family: $headline-font;
+				size: 40px;
+			};
 			line-height: 0;
-			font-size: 40px;
+			text-align: center;
+			width: $imgThumbSize;
+		}
+
+		.captionOverlay {
+			@include background-image(linear-gradient(left top, rgba(255,227,204,0.7) 0%,rgba(229,180,140,1) 100%));
+			width: 100%;
+
+			p {
+				font-size: 14px;
+				margin: 0 20px 20px 20px;
+			}
+
 		}
 
 		&:hover {
-			.overlay {
+			.nameOverlay {
 				@include opacity(1);
 				@include transition(all .25s);
 				max-height: $imgThumbSize;
@@ -62,7 +96,16 @@ body {
 			z-index: 9999;
 			margin: 52px 0px 0px 52px;
 
-			.overlay { display: none; }
+			.nameOverlay { display: none; }
+
+			&:hover {
+				.captionOverlay {
+					@include opacity(1);
+					@include transition(all .25s);
+					height: 200px;
+					max-height: 200px;
+				}
+			}
 		}
 	}
 }

@@ -8,6 +8,8 @@ Gallery =
 	# ...and some misc vars
 	$body: $ 'body'
 	$main: $ '#main'
+	imageWidth: 612
+	imageHeight: 612
 
 
 # Get spreadsheet JSON from Google Data API
@@ -31,27 +33,32 @@ Gallery.loadImages = (data) ->
 	console.log 'Google Spreadsheet JSON data: ', data
 
 	$.each data.feed.entry, (i) ->
-		console.log 'URL: ', @.gsx$url.$t
-		console.log 'Name: ', @.gsx$name.$t
-		console.log 'Caption: ', @.gsx$caption.$t
+		url = @.gsx$url.$t
+		name = @.gsx$name.$t
+		caption = @.gsx$caption.$t
+
+		console.log 'URL: ', url
+		console.log 'Name: ', name
+		console.log 'Caption: ', caption
 
 		# Create elements
-		$overlay = $('<div />').attr('class', 'overlay').text @.gsx$name.$t
+		$nameOverlay = $('<div />').attr('class', 'nameOverlay').text name
+		$captionOverlay = $('<div />').attr('class', 'captionOverlay').append '<h2>' + name + '</h2><p>' + caption + '</p>'
 		$container = $('<div />').attr
 			class: 'img-container'
 			id: 'img-' + i
 		$img = $('<img />').attr(
 			src: 'img/trans.png'
-			width: 612
-			height: 612)
+			width: Gallery.imageWidth
+			height: Gallery.imageHeight)
 			.data
-				original: @.gsx$url.$t
-				name: @.gsx$name.$t
-				caption: @.gsx$caption.$t
+				original: url
+				name: name
+				caption: caption
 
-		$container.append($overlay, $img).appendTo Gallery.$main
+		$container.append($nameOverlay, $captionOverlay, $img).appendTo Gallery.$main
 
-		# Initiate Masonry and lazy load when all elements have been created in the DOM
+		# Initiate Masonry and Lazy Load when all elements have been created in the DOM
 		if i is data.feed.entry.length-1
 			Gallery.init()
 
@@ -69,7 +76,7 @@ Gallery.init = ->
 	)
 
 
-# Lazy load function
+# Lazy Load function
 Gallery.lazyLoad = (opts) ->
 	$('.img-container img').lazyload opts
 
