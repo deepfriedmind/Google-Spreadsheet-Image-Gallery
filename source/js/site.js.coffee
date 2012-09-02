@@ -1,6 +1,8 @@
 # Include vendor JS
 #= require 'vendor/jquery.masonry'
 #= require 'vendor/jquery.lazyload'
+#= require 'vendor/history'
+#= require 'vendor/history.adapter.jquery'
 
 
 # Declare the main application object...
@@ -8,8 +10,11 @@ Gallery =
 	# ...and some misc vars
 	$body: $ 'body'
 	$main: $ '#main'
+	defaultPageTitle: document.title
+	defaultPagePath: document.location.pathname
 	imageWidth: 612
 	imageHeight: 612
+	currentImage: undefined
 
 
 # Get spreadsheet JSON from Google Data API
@@ -33,20 +38,24 @@ Gallery.loadImages = (data) ->
 	console.log 'Google Spreadsheet JSON data: ', data
 
 	$.each data.feed.entry, (i) ->
+		id = i+1
 		url = @.gsx$url.$t
 		name = @.gsx$name.$t
 		caption = @.gsx$caption.$t
 
-		console.log 'URL: ', url
-		console.log 'Name: ', name
-		console.log 'Caption: ', caption
+		# console.log 'URL: ', url
+		# console.log 'Name: ', name
+		# console.log 'Caption: ', caption
 
 		# Create elements
 		$nameOverlay = $('<div />').attr('class', 'nameOverlay').text name
 		$captionOverlay = $('<div />').attr('class', 'captionOverlay').append '<h2>' + name + '</h2><p>' + caption + '</p>'
-		$container = $('<div />').attr
+		$container = $('<div />').attr(
 			class: 'img-container'
-			id: 'img-' + i
+			id: 'img-' + id)
+			.data
+				id: id
+				name: name
 		$img = $('<img />').attr(
 			src: 'img/trans.png'
 			width: Gallery.imageWidth
@@ -75,6 +84,8 @@ Gallery.init = ->
 		isFitWidth: true
 	)
 
+	Gallery.urlHandler()
+
 
 # Lazy Load function
 Gallery.lazyLoad = (opts) ->
@@ -90,27 +101,65 @@ $(window).smartresize(->
 # Image click handler
 $('#main').on 'click', '.img-container', ->
 	$this = $ this
-	$id = '#' + $this.attr 'id'
+	$data = $this.data()
+	$id = $data.id
+	$name = $data.name
+	$elem = $('#img-' + $id)
 
+	# Enlarge the clicked image
 	if $this.hasClass 'active'
 		$this.removeClass 'active'
 		Gallery.$main.masonry 'reload'
+
+		# Reset state
+		Gallery.currentImage = undefined
+		if History.enabled
+			History.pushState(
+				id: 'default',
+				Gallery.defaultPageTitle, Gallery.defaultPagePath)
 
 	else
 		$('.img-container.active').removeClass 'active'
 		$this.addClass 'active'
 		Gallery.$main.masonry 'reload'
 
+		# Update state
+		Gallery.currentImage = $id
+		if History.enabled
+			History.pushState(
+				id: $id,
+				$name + ' | ' + Gallery.defaultPageTitle, $id)
+
+
 		# Scroll the element nicely in to view
 		$scrollOffset = $(window).scrollTop()+100
-		$elementOffset = Math.floor $($id).offset().top
+		$elemOffset = Math.floor $elem.offset().top
 		console.log '$scrollOffset: ', $scrollOffset
-		console.log '$elementOffset: ', $elementOffset
+		console.log '$elemOffset: ', $elemOffset
 
-		unless $scrollOffset is $elementOffset
+		unless $scrollOffset is $elemOffset
 			setTimeout (->
-				console.log 'scrolling'
 				$('html, body').animate
-					scrollTop: $elementOffset-100
-				, 'slow'
+					scrollTop: $elemOffset-100
+				, 'slow', ->
+					console.log 'Scrolled to image ', $id
 			), 1000
+
+
+# Handle browser back/forward button clicks
+$(window).on 'statechange', ->
+	console.log 'Gallery.currentImage: ', Gallery.currentImage
+	state = History.getState()
+	console.log 'state: ', state
+	if state.data.id is Gallery.currentImage
+		false
+	else if state.data.id is 'default'
+		$('.img-container.active').trigger 'click'
+	else
+		$('#img-' + state.data.id).trigger 'click'
+
+
+# Handle initial URL state for permalinks
+Gallery.urlHandler = ->
+	id = location.pathname.split('/').pop()
+	$('#img-' + id).trigger 'click'
