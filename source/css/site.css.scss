@@ -62,7 +62,7 @@ h2 {
 		}
 
 		.nameOverlay {
-			background-image: url(../img/image-overlay.png);
+			background-image: url(../img/thumb-overlay.png);
 			@include background-image(radial-gradient(center, ellipse cover, rgba(255,227,204,0.7) 0%,rgba(229,180,140,0.7) 100%));
 			font: {
 				family: $headline-font;
@@ -74,6 +74,7 @@ h2 {
 		}
 
 		.captionOverlay {
+			background-image: url(../img/E5B48C-70.png);
 			@include background-image(linear-gradient(left top, rgba(255,227,204,0.7) 0%,rgba(229,180,140,1) 100%));
 			width: 100%;
 

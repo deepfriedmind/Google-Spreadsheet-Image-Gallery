@@ -17,9 +17,9 @@ Gallery =
 	imageHeight: 612
 	currentImage: undefined
 
-console.log 'window.baseUrl: ', window.baseUrl
-console.log 'window.location.href: ', window.location.href
-console.log 'Gallery.defaultPagePath: ', Gallery.defaultPagePath
+# console.log 'window.baseUrl: ', window.baseUrl
+# console.log 'window.location.href: ', window.location.href
+# console.log 'Gallery.defaultPagePath: ', Gallery.defaultPagePath
 
 
 # Get spreadsheet JSON from Google Data API
@@ -40,7 +40,7 @@ $.ajax( Gallery.ajaxOpts ).done (data) ->
 
 # Load the images and insert into DOM
 Gallery.loadImages = (data) ->
-	console.log 'Google Spreadsheet JSON data: ', data
+	# console.log 'Google Spreadsheet JSON data: ', data
 
 	$.each data.feed.entry, (i) ->
 		id = i+1
@@ -144,23 +144,23 @@ $('#main').on 'click', '.img-container', ->
 		# Scroll the element nicely in to view
 		$scrollOffset = $(window).scrollTop()+100
 		$elemOffset = Math.floor $elem.offset().top
-		console.log '$scrollOffset: ', $scrollOffset
-		console.log '$elemOffset: ', $elemOffset
+		# console.log '$scrollOffset: ', $scrollOffset
+		# console.log '$elemOffset: ', $elemOffset
 
 		unless $scrollOffset is $elemOffset
 			setTimeout (->
 				$('html, body').animate
 					scrollTop: $elemOffset-100
 				, 'slow', ->
-					console.log 'Scrolled to image ', $id
+					# console.log 'Scrolled to image ', $id
 			), 1000
 
 
 # Handle browser back/forward button clicks
 $(window).on 'statechange', ->
-	console.log 'Gallery.currentImage: ', Gallery.currentImage
+	# console.log 'Gallery.currentImage: ', Gallery.currentImage
 	state = History.getState()
-	console.log 'state: ', state
+	# console.log 'state: ', state
 	if state.data.id is Gallery.currentImage
 		false
 	else if state.data.id is 'default'
