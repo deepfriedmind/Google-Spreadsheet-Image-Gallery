@@ -10,11 +10,16 @@ Gallery =
 	# ...and some misc vars
 	$body: $ 'body'
 	$main: $ '#main'
+	$permaLinkBtn: $ '#copy-permalink'
 	defaultPageTitle: document.title
-	defaultPagePath: document.location.pathname
+	defaultPagePath: window.baseUrl or window.location.href
 	imageWidth: 612
 	imageHeight: 612
 	currentImage: undefined
+
+console.log 'window.baseUrl: ', window.baseUrl
+console.log 'window.location.href: ', window.location.href
+console.log 'Gallery.defaultPagePath: ', Gallery.defaultPagePath
 
 
 # Get spreadsheet JSON from Google Data API
@@ -106,7 +111,7 @@ $('#main').on 'click', '.img-container', ->
 	$name = $data.name
 	$elem = $('#img-' + $id)
 
-	# Enlarge the clicked image
+	# Enlarge the clicked image (unless it's already active)
 	if $this.hasClass 'active'
 		$this.removeClass 'active'
 		Gallery.$main.masonry 'reload'
@@ -118,6 +123,9 @@ $('#main').on 'click', '.img-container', ->
 				id: 'default',
 				Gallery.defaultPageTitle, Gallery.defaultPagePath)
 
+		# Hide button to copy permalink
+		Gallery.$permaLinkBtn.removeClass()
+
 	else
 		$('.img-container.active').removeClass 'active'
 		$this.addClass 'active'
@@ -128,8 +136,10 @@ $('#main').on 'click', '.img-container', ->
 		if History.enabled
 			History.pushState(
 				id: $id,
-				$name + ' | ' + Gallery.defaultPageTitle, $id)
+				$name + ' | ' + Gallery.defaultPageTitle, Gallery.defaultPagePath+$id)
 
+		# Show button to copy permalink
+		Gallery.$permaLinkBtn.removeClass().addClass 'visible'
 
 		# Scroll the element nicely in to view
 		$scrollOffset = $(window).scrollTop()+100
@@ -158,8 +168,19 @@ $(window).on 'statechange', ->
 	else
 		$('#img-' + state.data.id).trigger 'click'
 
+	Gallery.$permaLinkBtn.children('input').val window.location.href
+
 
 # Handle initial URL state for permalinks
 Gallery.urlHandler = ->
 	id = location.pathname.split('/').pop()
 	$('#img-' + id).trigger 'click'
+	Gallery.$permaLinkBtn.children('input').val window.location.href
+
+
+# Copy permalink
+Gallery.$permaLinkBtn.on
+	mouseenter: ->
+		$(this).children('input').select().addClass 'visible'
+	mouseleave: ->
+		$(this).children('input').removeClass()
