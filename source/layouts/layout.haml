@@ -1,32 +1,32 @@
-!!!
-/[if lt IE 7] <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en">
-/[if IE 7] <html class="no-js lt-ie9 lt-ie8" lang="en">
-/[if IE 8] <html class="no-js lt-ie9" lang="en">
-/ [if gt IE 8]><!
+!!! 5
+/[if lt IE 7 ] <html class="no-js ie6" lang="en">
+/[if IE 7 ] <html class="no-js ie7" lang="en">
+/[if IE 8 ] <html class="no-js ie8" lang="en">
+/[if IE 9 ] <html class="no-js ie9" lang="en">
+<!--[if gt IE 9]><!-->
 %html.no-js{:lang => "en"}
-  / <![endif]
-  %head
-    %meta{:charset => "utf-8"}
-    %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
-    %title= data.page.title || "Google Spreadsheet Image Gallery"
-    %meta{:content => data.page.description || "Experiment with an image gallery populated by a Google Spreadsheet.", :name => "description"}
-    %meta{:content => "width=device-width", :name => "viewport"}
-    = javascript_include_tag "vendor/modernizr"
-    = stylesheet_link_tag "http://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic", "site"
-  %body
-    /[if lt IE 7] <p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-    %header
-    #main{:role => "main"}= yield
-    %footer
+	<!--<![endif]-->
+	%head
+		%meta{:charset => "utf-8"}
+		%meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
+		%title= data.page.title || "Google Spreadsheet Image Gallery"
+		%meta{:content => data.page.description || "Experiment with an image gallery populated by a Google Spreadsheet.", :name => "description"}
+		%meta{:content => "width=device-width", :name => "viewport"}
+		= javascript_include_tag "vendor/modernizr"
+		= stylesheet_link_tag "http://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic", "site"
+	%body
+		/[if lt IE 9] <p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site (and the rest of the web) properly.</p>
 
-    %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"}
-    :javascript
-      window.jQuery || document.write('<script src="javascripts/vendor/jquery-1.8.0.min.js"><\/script>')
-    = javascript_include_tag "site"
+		#main{:role => "main"}= yield
 
-    :javascript
-      window.jQuery || document.write('<\/script>')
-      var _gaq=[['_setAccount','UA-20918296-1'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
+		%script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"}
+		:javascript
+			window.jQuery || document.write('<script src="javascripts/vendor/jquery-1.8.0.min.js"><\/script>')
+		= javascript_include_tag "site"
+
+		:javascript
+			window.jQuery || document.write('<\/script>')
+			var _gaq=[['_setAccount','UA-20918296-1'],['_trackPageview']];
+			(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+			g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+			s.parentNode.insertBefore(g,s)}(document,'script'));
