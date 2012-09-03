@@ -75,7 +75,7 @@ h2 {
 
 		.captionOverlay {
 			background-image: url(../img/E5B48C-70.png);
-			@include background-image(linear-gradient(left top, rgba(255,227,204,0.7) 0%,rgba(229,180,140,1) 100%));
+			@include background-image(linear-gradient(left top, rgba(255,204,161,0.7) 0%,rgba(213,157,112,0.9) 100%));
 			width: 100%;
 
 			p { margin: 0 20px 20px 20px; }
