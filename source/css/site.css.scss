@@ -9,7 +9,7 @@
 
 // Misc vars
 $imgThumbSize: 306px;
-$imgFullSize: 510px;
+$imgFullSize: 612px;
 $headline-font: BebasNeue, 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 $body-font: "PT Serif", Georgia, "Times New Roman", Times, serif;
 
@@ -30,7 +30,7 @@ button, input, select, textarea { font-family: $body-font; }
 h2 {
 	font: {
 		family: $headline-font;
-		size: 30px;
+		size: 40px;
 		weight: normal;
 	};
 	margin: 20px;
@@ -78,7 +78,7 @@ h2 {
 			@include background-image(linear-gradient(left top, rgba(255,204,161,0.7) 0%,rgba(213,157,112,0.9) 100%));
 			width: 100%;
 
-			p { margin: 0 20px 20px 20px; }
+			p { font-size: 18px; margin: 0 20px 20px 20px; }
 		}
 
 		&:hover {
@@ -91,12 +91,8 @@ h2 {
 		}
 
 		&.active {
-			@include box-shadow(0 0 40px rgba(black, .8));
-			@include scale(1.25);
-			width: $imgFullSize;
-			height: $imgFullSize;
+			@include box-shadow(0 0 40px rgba(black, .7));
 			z-index: 10;
-			margin: 52px 0px 0px 52px;
 
 			.nameOverlay { display: none; }
 

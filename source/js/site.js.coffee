@@ -1,21 +1,24 @@
-# Include vendor JS
+# Include vendor JS via Sprockets
 #= require 'vendor/jquery.masonry'
 #= require 'vendor/jquery.lazyload'
 #= require 'vendor/history'
 #= require 'vendor/history.adapter.jquery'
+#= require 'vendor/jquery.easing.1.3'
 
 
-# Declare the main application object...
+# Declare the main application object and some misc vars
 Gallery =
-	# ...and some misc vars
 	$body: $ 'body'
 	$main: $ '#main'
 	$permaLinkBtn: $ '#copy-permalink'
 	defaultPageTitle: document.title
 	defaultPagePath: window.baseUrl or window.location.href
-	imageWidth: 612
-	imageHeight: 612
+	imgOrigWidth: 612
+	imgOrigHeight: 612
+	imgThumbWidth: 306
+	imgThumbHeight: 306
 	currentImage: undefined
+	pushState: History.enabled # Does the browser support pushState?
 
 # console.log 'window.baseUrl: ', window.baseUrl
 # console.log 'window.location.href: ', window.location.href
@@ -63,8 +66,8 @@ Gallery.loadImages = (data) ->
 				name: name
 		$img = $('<img />').attr(
 			src: 'img/trans.png'
-			width: Gallery.imageWidth
-			height: Gallery.imageHeight)
+			width: Gallery.imgOrigWidth
+			height: Gallery.imgOrigHeight)
 			.data
 				original: url
 				name: name
@@ -112,13 +115,26 @@ $('#main').on 'click', '.img-container', ->
 	$elem = $('#img-' + $id)
 
 	# Enlarge the clicked image (unless it's already active)
+	# The reason for using $.animate() for these animations is because transitioning CSS transforms (like "scale")
+	# still suffers from flickering/visual artifacts in Webkit and all the workarounds produce other
+	# problems like blurry, stretched images and text (due to rasterization), when put in an OpenGL 3D context.
+	# Safari on the Mac has gotten a bit better with this lately but Chrome is still quite problematic.
 	if $this.hasClass 'active'
-		$this.removeClass 'active'
-		Gallery.$main.masonry 'reload'
+		$this.children('.nameOverlay')
+		.hide()
+		.end()
+		.removeClass('active')
+		.stop(true,true)
+		.animate
+			width: Gallery.imgThumbWidth
+			height: Gallery.imgThumbHeight
+		, 'fast', 'easeInOutExpo', ->
+			$this.children('.nameOverlay').show()
+			Gallery.$main.masonry 'reload'
 
 		# Reset state
 		Gallery.currentImage = undefined
-		if History.enabled
+		if Gallery.pushState
 			History.pushState(
 				id: 'default',
 				Gallery.defaultPageTitle, Gallery.defaultPagePath)
@@ -127,13 +143,26 @@ $('#main').on 'click', '.img-container', ->
 		Gallery.$permaLinkBtn.removeClass()
 
 	else
-		$('.img-container.active').removeClass 'active'
-		$this.addClass 'active'
-		Gallery.$main.masonry 'reload'
+		if $('.img-container.active').length is 0
+			$this.addClass('active').stop(true,true).animate
+				width: Gallery.imgOrigWidth
+				height: Gallery.imgOrigHeight
+			, 'fast', 'easeInOutExpo', ->
+				Gallery.$main.masonry 'reload'
+		else
+			$('.img-container.active').removeClass('active').stop(true,true).animate
+				width: Gallery.imgThumbWidth
+				height: Gallery.imgThumbHeight
+			, 'fast', 'easeInOutExpo', ->
+				$this.addClass('active').stop(true,true).animate
+					width: Gallery.imgOrigWidth
+					height: Gallery.imgOrigHeight
+				, 'fast', 'easeInOutExpo', ->
+					Gallery.$main.masonry 'reload'
 
 		# Update state
 		Gallery.currentImage = $id
-		if History.enabled
+		if Gallery.pushState
 			History.pushState(
 				id: $id,
 				$name + ' | ' + Gallery.defaultPageTitle, Gallery.defaultPagePath+$id)
@@ -173,7 +202,7 @@ $(window).on 'statechange', ->
 
 # Handle initial URL state for permalinks
 Gallery.urlHandler = ->
-	id = location.pathname.split('/').pop()
+	id = window.location.pathname.split('/').pop()
 	$('#img-' + id).trigger 'click'
 	Gallery.$permaLinkBtn.children('input').val window.location.href
 
