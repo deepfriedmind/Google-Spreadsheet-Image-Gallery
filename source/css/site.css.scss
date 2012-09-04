@@ -23,6 +23,7 @@ body {
 		family: $body-font;
 		size: 14px;
 	}
+	overflow-x: hidden;
 }
 
 button, input, select, textarea { font-family: $body-font; }
