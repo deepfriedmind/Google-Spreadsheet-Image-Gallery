@@ -180,7 +180,7 @@ $('#main').on 'click', '.img-container', ->
 			setTimeout (->
 				$('html, body').animate
 					scrollTop: $elemOffset-100
-				, 'slow', ->
+				, 'slow', 'easeInOutQuint', ->
 					# console.log 'Scrolled to image ', $id
 			), 1000
 
