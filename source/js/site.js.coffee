@@ -5,8 +5,6 @@
 #= require 'vendor/history.adapter.jquery'
 #= require 'vendor/jquery.easing.1.3'
 
-
-# Declare the main application object and some misc vars
 Gallery =
 	$body: $ 'body'
 	$main: $ '#main'
