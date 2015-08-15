@@ -15,4 +15,4 @@ Main features:
 - Completely responsive layout using [jQuery Masonry](http://masonry.desandro.com/).
 - Single image view with permalink structure and fully functional browser forward/back button, using pushState via the HTML5 History API. The only server-side code needed is some mod_rewrites in .htaccess and getting the folder URL with PHP (to support having the site in a sub-folder).
 
-Photos borrowed from Instagram user @dew
+Photos borrowed from [@natgeo](https://instagram.com/natgeo/)
